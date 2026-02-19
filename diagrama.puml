@@ -1,20 +1,49 @@
-class Player
-class SoldierEnemy
-class RunnerEnemy
-class FlyingEnemy
-class BossEnemy
-class Civilian
-class Weapon
-class Projectile
-class Grenade
-class Explosion
-class HealthPack
-class AmmoPack
-class Shield
-class ExtraLife
-class Platform
-class MovingPlatform
-class DestructibleBox
-class ExplosiveBarrel
-class Door
-class Ladder
+@startuml
+
+'========================
+' CLASES BÁSICAS
+'========================
+
+class Juego
+class Nivel
+class Personaje
+class Jugador
+class Enemigo
+class Arma
+class Proyectil
+class Vehiculo
+class Item
+class SistemaColisiones
+
+'========================
+' HERENCIA (es un)
+'========================
+
+Jugador --|> Personaje
+Enemigo --|> Personaje
+
+'========================
+' COMPOSICIÓN (tiene un fuerte)
+'========================
+
+Juego *-- Nivel
+
+'========================
+' AGREGACIÓN (tiene un débil)
+'========================
+
+Jugador o-- Arma
+Jugador o-- Vehiculo
+Nivel o-- Enemigo
+Nivel o-- Item
+
+'========================
+' DEPENDENCIAS (usa un)
+'========================
+
+Arma ..> Proyectil
+SistemaColisiones ..> Personaje
+SistemaColisiones ..> Proyectil
+Juego ..> SistemaColisiones
+
+@enduml
