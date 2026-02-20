@@ -1,19 +1,69 @@
 @startuml
 
 '========================
-' CLASES BÁSICAS
+' CLASES PRINCIPALES
 '========================
 
 class Juego
 class Nivel
+class Mision
+class Escenario
+class HUD
+class SistemaFisicas
+class SistemaColisiones
+class SistemaPuntuacion
+class Camara
+class MotorGrafico
+class MotorSonido
+
+'========================
+' PERSONAJES
+'========================
+
 class Personaje
 class Jugador
 class Enemigo
+class JefeFinal
+class Soldado
+class Alien
+class Momia
+class Rebelde
+class Prisionero
+
+'========================
+' ARMAS
+'========================
+
 class Arma
-class Proyectil
+class Pistola
+class Ametralladora
+class Lanzacohetes
+class Escopeta
+class Granada
+
+'========================
+' VEHICULOS
+'========================
+
 class Vehiculo
+class MetalSlug
+class Tanque
+class Helicoptero
+class Avion
+
+'========================
+' OBJETOS
+'========================
+
+class Proyectil
+class Bala
+class Misil
+class Explosion
 class Item
-class SistemaColisiones
+class PowerUp
+class Municion
+class VidaExtra
+class Tesoro
 
 '========================
 ' HERENCIA (es un)
@@ -21,29 +71,85 @@ class SistemaColisiones
 
 Jugador --|> Personaje
 Enemigo --|> Personaje
+JefeFinal --|> Enemigo
+Soldado --|> Enemigo
+Alien --|> Enemigo
+Momia --|> Enemigo
+Rebelde --|> Enemigo
+Prisionero --|> Personaje
+
+Pistola --|> Arma
+Ametralladora --|> Arma
+Lanzacohetes --|> Arma
+Escopeta --|> Arma
+
+MetalSlug --|> Vehiculo
+Tanque --|> Vehiculo
+Helicoptero --|> Vehiculo
+Avion --|> Vehiculo
+
+Bala --|> Proyectil
+Misil --|> Proyectil
+
+PowerUp --|> Item
+Municion --|> Item
+VidaExtra --|> Item
+Tesoro --|> Item
 
 '========================
-' COMPOSICIÓN (tiene un fuerte)
+' COMPOSICION (tiene un fuerte)
 '========================
 
 Juego *-- Nivel
+Juego *-- HUD
+Juego *-- SistemaFisicas
+Juego *-- SistemaColisiones
+Juego *-- SistemaPuntuacion
+Juego *-- Camara
+
+Nivel *-- Mision
+Nivel *-- Escenario
+
+Arma *-- Proyectil
 
 '========================
-' AGREGACIÓN (tiene un débil)
+' AGREGACION (tiene un debil)
 '========================
 
 Jugador o-- Arma
+Jugador o-- Granada
 Jugador o-- Vehiculo
+
+Enemigo o-- Arma
+
 Nivel o-- Enemigo
 Nivel o-- Item
+Nivel o-- Prisionero
 
 '========================
 ' DEPENDENCIAS (usa un)
 '========================
 
+Juego ..> MotorGrafico
+Juego ..> MotorSonido
+
+Jugador ..> Arma
+Jugador ..> Vehiculo
+Jugador ..> Item
+
 Arma ..> Proyectil
+Proyectil ..> Explosion
+
 SistemaColisiones ..> Personaje
 SistemaColisiones ..> Proyectil
-Juego ..> SistemaColisiones
+SistemaColisiones ..> Vehiculo
+
+SistemaFisicas ..> Personaje
+SistemaFisicas ..> Vehiculo
+
+HUD ..> SistemaPuntuacion
+SistemaPuntuacion ..> Enemigo
 
 @enduml
+aun falta una que otra cosa para ajustar pero gracias a un par de
+referencias de redit llegue a esto
