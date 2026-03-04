@@ -1,99 +1,53 @@
 @startuml
 
 '========================
-' INTERFACES
-'========================
-
-interface IVida {
-    + recibirDanio(cantidad : int) : void
-    + estaVivo() : boolean
-    + morir() : void
-}
-
-interface IMenu {
-    + mostrarMenu() : void
-    + iniciarJuego() : void
-    + salir() : void
-}
-
-'========================
 ' CLASES PRINCIPALES
 '========================
 
 class Juego {
-    - activo : boolean
-    + iniciar() : void
-    + actualizar() : void
-    + terminar() : void
+    + iniciar()
 }
 
-class Nivel {
-    - numero : int
-    + cargar() : void
-    + finalizar() : void
-}
+class Nivel
+class Mision
+class Escenario
 
-class HUD {
-    + mostrarVida(vida : int) : void
-    + mostrarMunicion(municion : int) : void
-    + mostrarPuntaje(puntos : int) : void
-}
+class HUD
+class SistemaFisicas
+class SistemaColisiones
+class SistemaPuntuacion
+class Camara
 
-class SistemaFisicas {
-    + aplicarGravedad() : void
-}
-
-class SistemaColisiones {
-    + detectarColision() : boolean
-    + aplicarDanio(objetivo : IVida, cantidad : int) : void
-}
-
-class SistemaPuntuacion {
-    - puntos : int
-    + sumarPuntos(cantidad : int) : void
-    + obtenerPuntos() : int
-}
-
-class Camara {
-    + seguirJugador(jugador : Jugador) : void
-}
-
-class MotorGrafico {
-    + dibujar() : void
-}
-
-class MotorSonido {
-    + reproducirSonido(nombre : String) : void
-}
+class MotorGrafico
+class MotorSonido
 
 '========================
 ' PERSONAJES
 '========================
 
 class Personaje {
-    - vida : int
-    - posicionX : int
-    - posicionY : int
-    + mover(dx : int, dy : int) : void
-    + saltar() : void
-    + recibirDanio(cantidad : int) : void
-    + estaVivo() : boolean
-    + morir() : void
+    vida : int
+    + mover()
+    + recibirDanio(cantidad : int)
+    + morir()
 }
 
 class Jugador {
-    - granadas : int
-    - puntaje : int
-    + disparar() : void
-    + lanzarGranada() : void
+    vidas : int = 2
+    granadas : int
+    puntaje : int
+    + disparar()
+    + lanzarGranada()
 }
 
 class Enemigo {
-    + atacar() : void
+    vida : int
+    + atacar()
 }
 
 class JefeFinal {
-    + ataqueEspecial() : void
+    vida : int = 50
+    + ataqueEspecial()
 }
 
 class Soldado
@@ -107,19 +61,29 @@ class Prisionero
 '========================
 
 class Arma {
-    - municion : int
-    + disparar() : void
-    + recargar(cantidad : int) : void
+    municion : int
+    + disparar()
 }
 
-class Pistola
-class Ametralladora
-class Lanzacohetes
-class Escopeta
+class Pistola {
+    municion : int = -1
+}
+
+class Ametralladora {
+    municion : int = 200
+}
+
+class Lanzacohetes {
+    municion : int = 30
+}
+
+class Escopeta {
+    municion : int = 50
+}
 
 class Granada {
-    - cantidad : int
-    + lanzar() : void
+    cantidad : int
+    + lanzar()
 }
 
 '========================
@@ -127,15 +91,15 @@ class Granada {
 '========================
 
 class Vehiculo {
-    - vida : int
-    + mover(dx : int, dy : int) : void
-    + disparar() : void
-    + recibirDanio(cantidad : int) : void
-    + estaVivo() : boolean
-    + morir() : void
+    vida : int
+    + mover()
+    + disparar()
 }
 
-class MetalSlug
+class MetalSlug {
+    vida : int = 100
+}
+
 class Tanque
 class Helicoptero
 class Avion
@@ -145,29 +109,22 @@ class Avion
 '========================
 
 class Proyectil {
-    - velocidad : int
-    - danio : int
-    + mover() : void
+    + mover()
+    + explotar()
 }
 
 class Bala
 class Misil
+class Explosion
 
-class Explosion {
-    + explotar() : void
-}
-
-class Item {
-    + aplicarEfecto(jugador : Jugador) : void
-}
-
+class Item
 class PowerUp
 class Municion
 class VidaExtra
 class Tesoro
 
 '========================
-' HERENCIA (ES UN)
+' ES UN (HERENCIA)
 '========================
 
 Jugador --|> Personaje
@@ -198,33 +155,14 @@ VidaExtra --|> Item
 Tesoro --|> Item
 
 '========================
-' IMPLEMENTACION INTERFACES
-'========================
-
-Personaje ..|> IVida
-Vehiculo ..|> IVida
-Juego ..|> IMenu
-
-'========================
-' COMPOSICION (TIENE FUERTE)
+' TIENE (COMPOSICION Y AGREGACION)
 '========================
 
 Juego *-- Nivel
-Juego *-- HUD
-Juego *-- SistemaFisicas
-Juego *-- SistemaColisiones
-Juego *-- SistemaPuntuacion
-Juego *-- Camara
-
+Nivel *-- Mision
 Nivel *-- Escenario
 
-Arma *-- Proyectil
-
-'========================
-' AGREGACION (TIENE DEBIL)
-'========================
-
-Juego "1" o-- "1" Jugador
+Juego o-- Jugador
 Jugador o-- Arma
 Jugador o-- Granada
 Jugador o-- Vehiculo
@@ -233,22 +171,23 @@ Nivel o-- Enemigo
 Nivel o-- Item
 Nivel o-- Prisionero
 
+Arma *-- Proyectil
+
 '========================
-' DEPENDENCIAS (USA)
+' USA (DEPENDENCIAS)
 '========================
 
 Juego ..> MotorGrafico
 Juego ..> MotorSonido
 
-SistemaColisiones ..> IVida
-SistemaColisiones ..> Proyectil
+Jugador ..> Arma
+Jugador ..> Vehiculo
 
 Arma ..> Proyectil
 Proyectil ..> Explosion
 
+SistemaColisiones ..> Personaje
 SistemaFisicas ..> Personaje
-SistemaFisicas ..> Vehiculo
-
 HUD ..> SistemaPuntuacion
 
 @enduml
