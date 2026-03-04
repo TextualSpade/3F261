@@ -1,48 +1,105 @@
 @startuml
 
 '========================
+' INTERFACES
+'========================
+
+interface IVida {
+    + recibirDanio(cantidad : int) : void
+    + estaVivo() : boolean
+    + morir() : void
+}
+
+interface IMenu {
+    + mostrarMenu() : void
+    + iniciarJuego() : void
+    + salir() : void
+}
+
+'========================
 ' CLASES PRINCIPALES
 '========================
 
-class Juego
-class Nivel
-class Mision
-class Escenario
-class HUD
-class SistemaFisicas
-class SistemaColisiones
-class SistemaPuntuacion
-class Camara
-class MotorGrafico
-class MotorSonido
+class Juego {
+    - activo : boolean
+    + iniciar() : void
+    + actualizar() : void
+    + terminar() : void
+}
+
+class Nivel {
+    - numero : int
+    + cargar() : void
+    + finalizar() : void
+}
+
+class HUD {
+    + mostrarVida(vida : int) : void
+    + mostrarMunicion(municion : int) : void
+    + mostrarPuntaje(puntos : int) : void
+}
+
+class SistemaFisicas {
+    + aplicarGravedad() : void
+}
+
+class SistemaColisiones {
+    + detectarColision() : boolean
+    + aplicarDanio(objetivo : IVida, cantidad : int) : void
+}
+
+class SistemaPuntuacion {
+    - puntos : int
+    + sumarPuntos(cantidad : int) : void
+    + obtenerPuntos() : int
+}
+
+class Camara {
+    + seguirJugador(jugador : Jugador) : void
+}
+
+class MotorGrafico {
+    + dibujar() : void
+}
+
+class MotorSonido {
+    + reproducirSonido(nombre : String) : void
+}
 
 '========================
 ' PERSONAJES
 '========================
 
 class Personaje {
-    vida : int
+    - vida : int
+    - posicionX : int
+    - posicionY : int
+    + mover(dx : int, dy : int) : void
+    + saltar() : void
+    + recibirDanio(cantidad : int) : void
+    + estaVivo() : boolean
+    + morir() : void
 }
 
 class Jugador {
-    vidas : int = 2
-    granadas : int
-    puntaje : int
+    - granadas : int
+    - puntaje : int
+    + disparar() : void
+    + lanzarGranada() : void
 }
 
 class Enemigo {
-    vida : int
+    + atacar() : void
 }
 
 class JefeFinal {
-    vida : int = 50
+    + ataqueEspecial() : void
 }
 
 class Soldado
 class Alien
 class Momia
 class Rebelde
-
 class Prisionero
 
 '========================
@@ -50,27 +107,19 @@ class Prisionero
 '========================
 
 class Arma {
-    municion : int
+    - municion : int
+    + disparar() : void
+    + recargar(cantidad : int) : void
 }
 
-class Pistola {
-    municion : int = -1
-}
-
-class Ametralladora {
-    municion : int = 200
-}
-
-class Lanzacohetes {
-    municion : int = 30
-}
-
-class Escopeta {
-    municion : int = 50
-}
+class Pistola
+class Ametralladora
+class Lanzacohetes
+class Escopeta
 
 class Granada {
-    cantidad : int
+    - cantidad : int
+    + lanzar() : void
 }
 
 '========================
@@ -78,13 +127,15 @@ class Granada {
 '========================
 
 class Vehiculo {
-    vida : int
+    - vida : int
+    + mover(dx : int, dy : int) : void
+    + disparar() : void
+    + recibirDanio(cantidad : int) : void
+    + estaVivo() : boolean
+    + morir() : void
 }
 
-class MetalSlug {
-    vida : int = 100
-}
-
+class MetalSlug
 class Tanque
 class Helicoptero
 class Avion
@@ -93,12 +144,23 @@ class Avion
 ' OBJETOS
 '========================
 
-class Proyectil
+class Proyectil {
+    - velocidad : int
+    - danio : int
+    + mover() : void
+}
+
 class Bala
 class Misil
-class Explosion
 
-class Item
+class Explosion {
+    + explotar() : void
+}
+
+class Item {
+    + aplicarEfecto(jugador : Jugador) : void
+}
+
 class PowerUp
 class Municion
 class VidaExtra
@@ -136,34 +198,40 @@ VidaExtra --|> Item
 Tesoro --|> Item
 
 '========================
+' IMPLEMENTACION INTERFACES
+'========================
+
+Personaje ..|> IVida
+Vehiculo ..|> IVida
+Juego ..|> IMenu
+
+'========================
 ' COMPOSICION (TIENE FUERTE)
 '========================
 
-Juego "1" *-- "1" Nivel
-Juego "1" *-- "1" HUD
-Juego "1" *-- "1" SistemaFisicas
-Juego "1" *-- "1" SistemaColisiones
-Juego "1" *-- "1" SistemaPuntuacion
-Juego "1" *-- "1" Camara
+Juego *-- Nivel
+Juego *-- HUD
+Juego *-- SistemaFisicas
+Juego *-- SistemaColisiones
+Juego *-- SistemaPuntuacion
+Juego *-- Camara
 
-Nivel "1" *-- "1..*" Mision
-Nivel "1" *-- "1" Escenario
+Nivel *-- Escenario
 
-Arma "1" *-- "0..*" Proyectil
+Arma *-- Proyectil
 
 '========================
 ' AGREGACION (TIENE DEBIL)
 '========================
 
-Jugador "1" o-- "1" Arma
-Jugador "1" o-- "0..*" Granada
-Jugador "1" o-- "0..1" Vehiculo
+Juego "1" o-- "1" Jugador
+Jugador o-- Arma
+Jugador o-- Granada
+Jugador o-- Vehiculo
 
-Enemigo "1" o-- "0..1" Arma
-
-Nivel "1" o-- "1..*" Enemigo
-Nivel "1" o-- "0..*" Item
-Nivel "1" o-- "0..*" Prisionero
+Nivel o-- Enemigo
+Nivel o-- Item
+Nivel o-- Prisionero
 
 '========================
 ' DEPENDENCIAS (USA)
@@ -172,21 +240,15 @@ Nivel "1" o-- "0..*" Prisionero
 Juego ..> MotorGrafico
 Juego ..> MotorSonido
 
-Jugador ..> Arma
-Jugador ..> Vehiculo
-Jugador ..> Item
+SistemaColisiones ..> IVida
+SistemaColisiones ..> Proyectil
 
 Arma ..> Proyectil
 Proyectil ..> Explosion
-
-SistemaColisiones ..> Personaje
-SistemaColisiones ..> Proyectil
-SistemaColisiones ..> Vehiculo
 
 SistemaFisicas ..> Personaje
 SistemaFisicas ..> Vehiculo
 
 HUD ..> SistemaPuntuacion
-SistemaPuntuacion ..> Enemigo
 
 @enduml
