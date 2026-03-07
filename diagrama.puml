@@ -1,6 +1,18 @@
 @startuml
 
 '========================
+' INTERFACES
+'========================
+
+interface Disparable {
+    + disparar()
+}
+
+interface Movible {
+    + mover()
+}
+
+'========================
 ' CLASES PRINCIPALES
 '========================
 
@@ -153,6 +165,20 @@ PowerUp --|> Item
 Municion --|> Item
 VidaExtra --|> Item
 Tesoro --|> Item
+
+'========================
+' IMPLEMENTA INTERFACES
+'========================
+
+Jugador ..|> Disparable
+Jugador ..|> Movible
+
+Vehiculo ..|> Disparable
+Vehiculo ..|> Movible
+
+Arma ..|> Disparable
+
+Proyectil ..|> Movible
 
 '========================
 ' TIENE (COMPOSICION Y AGREGACION)
