@@ -1,4 +1,3 @@
-@startuml
 @startuml MetalSlugModelo
 
 class Numero {
@@ -93,6 +92,7 @@ class Municion
 class VidaExtra
 class Tesoro
 
+
 Jugador --|> Personaje
 Enemigo --|> Personaje
 JefeFinal --|> Enemigo
@@ -120,28 +120,31 @@ Municion --|> Item
 VidaExtra --|> Item
 Tesoro --|> Item
 
-Juego *-- Nivel
-Nivel *-- Mision
-Nivel *-- Escenario
 
-Juego o-- Jugador
-Jugador o-- Arma
-Jugador o-- Granada
-Jugador o-- Vehiculo
+Juego "1" *-- "1..*" Nivel
+Nivel "1" *-- "1..*" Mision
+Nivel "1" *-- "1" Escenario
 
-Nivel o-- Enemigo
-Nivel o-- Item
-Nivel o-- Prisionero
+Juego "1" o-- "1" Jugador
+Jugador "1" o-- "0..1" Arma
+Jugador "1" o-- "1..10" Granada
+Jugador "1" o-- "0..1" Vehiculo
+Jugador "1" o-- "0..1" JefeFinal
 
-Arma *-- Proyectil
-Proyectil o-- Explosion
+Nivel "1" *-- "0..*" Enemigo
+Nivel "1" *-- "0..*" Item
+Nivel "1" *-- "0..*" Prisionero
 
-Juego o-- MotorGrafico
-Juego o-- MotorSonido
+Arma "1" *-- "0..*" Proyectil
+Proyectil "1" o-- "0..1" Explosion
 
-SistemaColisiones o-- Personaje
-SistemaFisicas o-- Personaje
-HUD o-- SistemaPuntuacion
+Juego "1" o-- "1" MotorGrafico
+Juego "1" o-- "1" MotorSonido
+Juego "1" o-- "1" HUD
+Juego "1" o-- "1" Camara
 
-@enduml
+SistemaColisiones "1" o-- "0..*" Personaje
+SistemaFisicas "1" o-- "0..*" Personaje
+HUD "1" o-- "1" SistemaPuntuacion
+
 @enduml
