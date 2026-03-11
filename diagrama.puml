@@ -1,23 +1,12 @@
 @startuml
+@startuml MetalSlugModelo
 
-'========================
-' INTERFACES
-'========================
-
-interface Disparable {
-    + disparar()
+class Numero {
+    - valor
 }
-
-interface Movible {
-    + mover()
-}
-
-'========================
-' CLASES PRINCIPALES
-'========================
 
 class Juego {
-    + iniciar()
+    + Iniciar()
 }
 
 class Nivel
@@ -33,33 +22,28 @@ class Camara
 class MotorGrafico
 class MotorSonido
 
-'========================
-' PERSONAJES
-'========================
-
 class Personaje {
-    vida : int
-    + mover()
-    + recibirDanio(cantidad : int)
-    + morir()
+    - vida : Numero
+    + Mover()
+    + RecibirDanio(cantidad : Numero)
+    + Morir()
 }
 
 class Jugador {
-    vidas : int = 2
-    granadas : int
-    puntaje : int
-    + disparar()
-    + lanzarGranada()
+    - vidas : Numero
+    - granadas : Numero
+    - puntaje : Numero
+    + Disparar()
+    + LanzarGranada()
 }
 
 class Enemigo {
-    vida : int
-    + atacar()
+    + Atacar()
 }
 
 class JefeFinal {
-    vida : int = 50
-    + ataqueEspecial()
+    - vida : Numero
+    + AtacarEspecial()
 }
 
 class Soldado
@@ -68,61 +52,35 @@ class Momia
 class Rebelde
 class Prisionero
 
-'========================
-' ARMAS
-'========================
-
 class Arma {
-    municion : int
-    + disparar()
+    - municion : Numero
+    + Disparar()
 }
 
-class Pistola {
-    municion : int = -1
-}
-
-class Ametralladora {
-    municion : int = 200
-}
-
-class Lanzacohetes {
-    municion : int = 30
-}
-
-class Escopeta {
-    municion : int = 50
-}
+class Pistola
+class Ametralladora
+class Lanzacohetes
+class Escopeta
 
 class Granada {
-    cantidad : int
-    + lanzar()
+    - cantidad : Numero
+    + Lanzar()
 }
-
-'========================
-' VEHICULOS
-'========================
 
 class Vehiculo {
-    vida : int
-    + mover()
-    + disparar()
+    - vida : Numero
+    + Mover()
+    + Disparar()
 }
 
-class MetalSlug {
-    vida : int = 100
-}
-
+class MetalSlug
 class Tanque
 class Helicoptero
 class Avion
 
-'========================
-' OBJETOS
-'========================
-
 class Proyectil {
-    + mover()
-    + explotar()
+    + Mover()
+    + Explotar()
 }
 
 class Bala
@@ -134,10 +92,6 @@ class PowerUp
 class Municion
 class VidaExtra
 class Tesoro
-
-'========================
-' ES UN (HERENCIA)
-'========================
 
 Jugador --|> Personaje
 Enemigo --|> Personaje
@@ -166,24 +120,6 @@ Municion --|> Item
 VidaExtra --|> Item
 Tesoro --|> Item
 
-'========================
-' IMPLEMENTA INTERFACES
-'========================
-
-Jugador ..|> Disparable
-Jugador ..|> Movible
-
-Vehiculo ..|> Disparable
-Vehiculo ..|> Movible
-
-Arma ..|> Disparable
-
-Proyectil ..|> Movible
-
-'========================
-' TIENE (COMPOSICION Y AGREGACION)
-'========================
-
 Juego *-- Nivel
 Nivel *-- Mision
 Nivel *-- Escenario
@@ -198,22 +134,14 @@ Nivel o-- Item
 Nivel o-- Prisionero
 
 Arma *-- Proyectil
+Proyectil o-- Explosion
 
-'========================
-' USA (DEPENDENCIAS)
-'========================
+Juego o-- MotorGrafico
+Juego o-- MotorSonido
 
-Juego ..> MotorGrafico
-Juego ..> MotorSonido
+SistemaColisiones o-- Personaje
+SistemaFisicas o-- Personaje
+HUD o-- SistemaPuntuacion
 
-Jugador ..> Arma
-Jugador ..> Vehiculo
-
-Arma ..> Proyectil
-Proyectil ..> Explosion
-
-SistemaColisiones ..> Personaje
-SistemaFisicas ..> Personaje
-HUD ..> SistemaPuntuacion
-
+@enduml
 @enduml
